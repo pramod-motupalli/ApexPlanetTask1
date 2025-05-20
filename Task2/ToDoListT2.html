@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced To-Do List</title>
+  <style>
+    :root {
+      --primary: #07856e;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger:  #dc3545;
+      --light:   #000000;
+      --gray:    #6c757d;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #72b5e8, #e896f5);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .todo-container {
+      background:  linear-gradient(to right, #60e298, #eaf63f);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      justify-content: center;
+      
+      max-width: 500px;
+    }
+
+    .todo-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .todo-input {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .todo-input input,
+    .todo-input select {
+      padding: 0.65rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .todo-input button {
+      grid-column: span 2;
+      padding: 0.75rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .todo-input button:hover {
+      background-color: #0056b3;
+    }
+
+    .todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .todo-list li {
+      background: #fdfdfd;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 6px solid var(--gray);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      transition: all 0.2s ease;
+    }
+
+    .todo-list li:hover {
+      background-color: #f1f1f1;
+    }
+
+    .todo-details {
+      flex: 1;
+      padding-right: 1rem;
+    }
+
+    .todo-details .title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .todo-details .meta {
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-top: 0.2rem;
+    }
+
+    .todo-list button {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 0.5rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+
+    .todo-list button:hover {
+      background: #c82333;
+    }
+
+    /* Priority Colors */
+    .prio-Low    { border-color: var(--success); }
+    .prio-Medium { border-color: var(--warning); }
+    .prio-High   { border-color: var(--danger); }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .todo-input {
+        grid-template-columns: 1fr;
+      }
+      .todo-input button {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="todo-container">
+    <h2>📝 My Advanced To-Do List</h2>
+    <div class="todo-input">
+      <input type="text" id="taskTitle" placeholder="Task Title" />
+      <select id="taskPriority">
+        <option value="Low">Low Priority</option>
+        <option value="Medium">Medium Priority</option>
+        <option value="High">High Priority</option>
+      </select>
+      <input type="datetime-local" id="taskDue" />
+      <button onclick="addTask()">Add Task</button>
+    </div>
+    <ul id="taskList" class="todo-list"></ul>
+  </div>
+
+  <script>
+    function addTask() {
+      const title = document.getElementById('taskTitle').value.trim();
+      const prio  = document.getElementById('taskPriority').value;
+      const due   = document.getElementById('taskDue').value;
+
+      if (!title || !due) {
+        alert('Please enter both a task title and due date.');
+        return;
+      }
+
+      const taskList = document.getElementById('taskList');
+
+      const li = document.createElement('li');
+      li.classList.add('prio-' + prio);
+
+      const details = document.createElement('div');
+      details.className = 'todo-details';
+      details.innerHTML = `
+        <div class="title">${title}</div>
+        <div class="meta">Priority: ${prio} &nbsp;|&nbsp; Due: ${new Date(due).toLocaleString()}</div>
+        <div class="meta">Added: ${new Date().toLocaleTimeString()}</div>
+      `;
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = 'Delete';
+      delBtn.onclick = () => li.remove();
+
+      li.appendChild(details);
+      li.appendChild(delBtn);
+      taskList.appendChild(li);
+
+      // Reset fields
+      document.getElementById('taskTitle').value = '';
+      document.getElementById('taskPriority').value = 'Low';
+      document.getElementById('taskDue').value = '';
+    }
+  </script>
+
+</body>
+</html>
