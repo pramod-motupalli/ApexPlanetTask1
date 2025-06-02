@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quick Quiz - Calm Blue Theme</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    color: #222;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .quiz-container {
+    background: #ffffff;
+    border-radius: 12px;
+    max-width: 480px;
+    width: 100%;
+    padding: 2rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #0a3d62;
+  }
+  .timer {
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #ee5253;
+  }
+  .question {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+  }
+  .options button {
+    background: #e7eef7;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #0a3d62;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    box-shadow: 0 2px 6px rgba(10, 61, 98, 0.1);
+  }
+  .options button:hover {
+    background: #0a3d62;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(10, 61, 98, 0.3);
+    border-color: #0a3d62;
+  }
+  .options button:focus {
+    outline: none;
+    border-color: #ee5253;
+    background: #ee5253;
+    color: white;
+    box-shadow: 0 0 10px #ee5253;
+  }
+  .result {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    color: #222;
+  }
+  @media (max-width: 500px) {
+    .quiz-container {
+      padding: 1.5rem;
+    }
+    .question {
+      font-size: 1.1rem;
+    }
+    .options button {
+      font-size: 0.9rem;
+      padding: 0.65rem 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h1>Quick Quiz</h1>
+  <div class="timer">Time left: <span id="time">10</span> sec</div>
+  <div class="question" id="question"></div>
+  <div class="options" id="options"></div>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const quizData = [
+  {
+    question: "What is the capital of France?",
+    options: ["Paris", "London", "Berlin", "Rome"],
+    answer: "Paris",
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Mars", "Venus", "Jupiter", "Saturn"],
+    answer: "Mars",
+  },
+  {
+    question: "Who wrote 'Hamlet'?",
+    options: ["Shakespeare", "Tolkien", "Dickens", "Rowling"],
+    answer: "Shakespeare",
+  },
+  {
+    question: "What is 5 + 7?",
+    options: ["10", "12", "14", "13"],
+    answer: "12",
+  },
+  {
+    question: "What is the largest ocean?",
+    options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+    answer: "Pacific",
+  },
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+let timeLeft = 10;
+let timerInterval;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const resultEl = document.getElementById("result");
+const timeEl = document.getElementById("time");
+
+function loadQuestion() {
+  if (currentQuestionIndex >= quizData.length) {
+    showResult();
+    return;
+  }
+  
+  timeLeft = 10;
+  timeEl.textContent = timeLeft;
+  const q = quizData[currentQuestionIndex];
+  questionEl.textContent = q.question;
+  optionsEl.innerHTML = "";
+
+  q.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.textContent = option;
+    btn.onclick = () => selectAnswer(option);
+    optionsEl.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timeEl.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      currentQuestionIndex++;
+      loadQuestion();
+    }
+  }, 1000);
+}
+
+function selectAnswer(selected) {
+  clearInterval(timerInterval);
+  if (selected === quizData[currentQuestionIndex].answer) {
+    score++;
+  }
+  currentQuestionIndex++;
+  loadQuestion();
+}
+
+function showResult() {
+  questionEl.textContent = "";
+  optionsEl.innerHTML = "";
+  timeEl.parentElement.style.display = "none";
+  resultEl.textContent = `Quiz Over! Your score: ${score} / ${quizData.length}`;
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
