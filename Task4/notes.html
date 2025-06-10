@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vibrant Note App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-accent: #6D28D9; /* Vibrant Purple */
+      --primary-accent-dark: #5B21B6;
+      --secondary-accent: #EC4899; /* Pink for contrast if needed */
+      
+      --success-color: #10B981; /* Emerald Green */
+      --success-color-dark: #059669;
+      --danger-color: #EF4444; /* Red */
+      --danger-color-hover-bg: #FEE2E2; /* Lighter red for hover background */
+      
+      --bg-gradient-start: #F3E8FF; /* Light Lavender */
+      --bg-gradient-end: #E0E7FF;   /* Light Blueish Lavender */
+      
+      --card-bg-color: #ffffff;
+      --text-primary: #1F2937; /* Darkest Gray */
+      --text-secondary: #4B5563; /* Dark Gray */
+      --text-muted: #9CA3AF;    /* Medium Gray */
+      
+      --border-color: #D1D5DB; /* Light Gray for borders */
+      --border-radius-main: 12px;
+      --border-radius-small: 8px;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      
+      --font-family: 'Poppins', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-image: linear-gradient(120deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      padding: 2rem 1rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; 
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    header h1 {
+      color: var(--primary-accent);
+      font-weight: 700;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+     header p {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+
+    .input-area {
+      background-color: var(--card-bg-color);
+      padding: 1.5rem 2rem;
+      border-radius: var(--border-radius-main);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    textarea#noteInput {
+      width: 100%;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      font-family: var(--font-family);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-small);
+      resize: vertical;
+      min-height: 100px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      color: var(--text-primary);
+    }
+
+    textarea#noteInput::placeholder {
+        color: var(--text-muted);
+    }
+
+    textarea#noteInput:focus {
+      outline: none;
+      border-color: var(--primary-accent);
+      box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
+    }
+
+    button, .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--border-radius-small);
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+      font-family: var(--font-family);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    button:active, .btn:active {
+        transform: scale(0.97);
+    }
+
+    button#addNoteBtn {
+      background-color: var(--primary-accent);
+      color: white;
+      align-self: flex-end;
+      box-shadow: var(--shadow-sm);
+    }
+
+    button#addNoteBtn:hover {
+      background-color: var(--primary-accent-dark);
+      box-shadow: var(--shadow-md);
+    }
+    
+    button#addNoteBtn .icon {
+        font-size: 1.2em;
+    }
+
+    #notesContainer {
+      width: 100%;
+    }
+
+    #notesContainer h2 {
+      font-size: 1.75rem;
+      color: var(--primary-accent);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      position: relative;
+    }
+    #notesContainer h2::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background-color: var(--primary-accent);
+      margin: 0.25rem auto 0;
+      border-radius: 2px;
+    }
+
+    ul#noteList {
+      list-style: none;
+      width: 100%;
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    li.note-item {
+      background-color: var(--card-bg-color);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--border-radius-main);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      border-left: 4px solid var(--primary-accent);
+    }
+
+    li.note-item:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-4px);
+    }
+
+    .note-content {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--text-secondary);
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .note-meta {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed var(--border-color);
+    }
+    
+    .note-timestamp {
+        font-weight: 500;
+    }
+
+    .delete-btn {
+      background-color: transparent;
+      color: var(--danger-color);
+      border: 1px solid transparent;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .delete-btn:hover {
+      background-color: var(--danger-color-hover-bg);
+      border-color: var(--danger-color);
+      color: var(--danger-color); 
+    }
+    .delete-btn .icon {
+        font-size: 1.1em;
+        margin-right: 0.25rem;
+    }
+
+
+    p#noNotesMessage {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      padding: 3rem 1.5rem;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: var(--border-radius-main);
+      box-shadow: var(--shadow-md);
+      border: 1px dashed var(--border-color);
+    }
+     p#noNotesMessage .icon {
+        display: block;
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary-accent);
+        opacity: 0.7;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+    
+    @media (max-width: 600px) {
+        body {
+            padding: 1.5rem 0.75rem;
+        }
+        .container {
+            gap: 1.5rem;
+        }
+        header h1 {
+            font-size: 2rem;
+        }
+        header p {
+            font-size: 0.85rem;
+        }
+        .input-area {
+            padding: 1.25rem 1.5rem;
+        }
+        button, .btn {
+            padding: 0.65rem 1.3rem;
+            font-size: 0.95rem;
+        }
+        li.note-item {
+            padding: 1rem 1.25rem;
+        }
+        .note-content {
+            font-size: 0.9rem;
+        }
+        .note-meta {
+            font-size: 0.75rem;
+        }
+        .delete-btn {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+        }
+        p#noNotesMessage {
+            font-size: 1rem;
+            padding: 2rem 1rem;
+        }
+        #notesContainer h2 {
+            font-size: 1.5rem;
+        }
+    }
+
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <header>
+      <h1>Sparkle Notes ✨</h1>
+      <p>Capture your thoughts, ideas, and reminders with ease!</p>
+    </header>
+    
+    <div class="input-area">
+      <textarea id="noteInput" placeholder="Jot down your brilliant idea... (Ctrl+Enter to save)"></textarea>
+      <button id="addNoteBtn" aria-label="Add new note">
+        <span class="icon">➕</span> Add Note
+      </button>
+    </div>
+
+    <div id="notesContainer">
+      <h2>Your Notes</h2>
+      <ul id="noteList">
+      </ul>
+      <p id="noNotesMessage" class="hidden">
+        <span class="icon">📝</span>
+        It's a bit empty here...<br>Why not add your first note?
+      </p>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const noteInput = document.getElementById('noteInput');
+        const addNoteBtn = document.getElementById('addNoteBtn');
+        const noteList = document.getElementById('noteList');
+        const noNotesMessage = document.getElementById('noNotesMessage');
+
+        const getNotes = () => JSON.parse(localStorage.getItem('sparkle-notes')) || [];
+        const saveNotes = (notes) => localStorage.setItem('sparkle-notes', JSON.stringify(notes));
+
+        const formatTimestamp = (timestamp) => {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', hour12: true
+            });
+        };
+
+        const renderNotes = () => {
+            const notes = getNotes().sort((a, b) => b.timestamp - a.timestamp);
+            noteList.innerHTML = '';
+
+            if (notes.length === 0) {
+                noNotesMessage.classList.remove('hidden');
+                noteList.classList.add('hidden');
+            } else {
+                noNotesMessage.classList.add('hidden');
+                noteList.classList.remove('hidden');
+                notes.forEach(note => {
+                    const li = document.createElement('li');
+                    li.classList.add('note-item');
+                    li.dataset.id = note.id;
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.classList.add('note-content');
+                    contentDiv.textContent = note.text;
+
+                    const metaDiv = document.createElement('div');
+                    metaDiv.classList.add('note-meta');
+
+                    const timestampSpan = document.createElement('span');
+                    timestampSpan.classList.add('note-timestamp');
+                    timestampSpan.textContent = `${formatTimestamp(note.timestamp)}`;
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.innerHTML = '<span class="icon">🗑️</span> Delete';
+                    deleteBtn.setAttribute('aria-label', `Delete note titled: ${note.text.substring(0,30)}`);
+                    deleteBtn.onclick = () => deleteNote(note.id);
+                    
+                    metaDiv.appendChild(timestampSpan);
+                    metaDiv.appendChild(deleteBtn);
+
+                    li.appendChild(contentDiv);
+                    li.appendChild(metaDiv);
+                    noteList.appendChild(li);
+                });
+            }
+        };
+
+        const addNote = () => {
+            const noteText = noteInput.value.trim();
+            if (noteText) {
+                const notes = getNotes();
+                const newNote = {
+                    id: Date.now(), 
+                    text: noteText,
+                    timestamp: Date.now()
+                };
+                notes.push(newNote);
+                saveNotes(notes);
+                noteInput.value = '';
+                noteInput.focus();
+                renderNotes();
+            } else {
+                alert("Oops! Your note is empty. Please write something before saving.");
+            }
+        };
+
+        const deleteNote = (id) => {
+        
+            if (confirm("Are you sure you want to send this note to the void?")) {
+                let notes = getNotes();
+                notes = notes.filter(note => note.id !== id);
+                saveNotes(notes);
+                renderNotes();
+            }
+        };
+
+        addNoteBtn.addEventListener('click', addNote);
+        noteInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+                event.preventDefault(); 
+                addNote();
+            }
+        });
+
+
+        renderNotes();
+    });
+  </script>
+
+</body>
+</html>
